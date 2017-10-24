@@ -1,3 +1,4 @@
+// If the diode value is less than this, we are blocked
 #define LIMVAL 100
 
 // Current Time
@@ -53,8 +54,10 @@ void setup() {
 }
 
 void loop() {
-  // Read Current Time
+  // Read Current Time and Pin Values
   curtime = millis();
+  valA = analogRead(pinA);
+  valB = analogRead(pinB);
   
   // State Logic
   if(currentState == A_FWD) {
@@ -70,14 +73,58 @@ void loop() {
     //
   }
   else if(currentState == D_INI) {
-    //
+    // Value Resolution
+    if(valA < LIMVAL) {
+      // If A is blocked, move to A_FWD
+      nextState = A_FWD;
+      timeA = curtime;
+      timeB = 0;
+      timeT = 0;
+      speedVal = 0.0;
+    }
+    else if(valB < LIMVAL) {
+      // If B is blocked, move to B_REV
+      nextState = B_REV;
+      timeA = 0;
+      timeB = curtime;
+      timeT = 0;
+      speedVal = 0.0;
+    }
+    else {
+      // Otherwise, remain in D_INI
+      nextState = D_INI;
+      timeA = 0;
+      timeB = 0;
+      timeT = 0;
+      speedVal = 0.0;
+    }
   }
   else if(currentState == D_TIM) {
-    //
+    // Display the time and speed
+    Serial.print("Time Elapsed: ");
+    Serial.print(timeT);
+    Serial.print(" milliseconds\n");
+    Serial.print("Speed: ");
+    Serial.print(speedVal);
+    Serial.print(" Miles per Hour\n");
+    
+    // Value Resolution
+    nextState = D_INI;
+    timeA = timeA;
+    timeB = timeB;
+    timeT = timeT;
+    speedVal = speedVal;
   }
   else {
+    // Display the Error
     Serial.println("State Machine Error");
+    
+    // Value Resolution
     nextState = D_INI;
+    timeA = 0;
+    timeB = 0;
+    timeT = 0;
+    speedVal = 0.0;
   }
   
   // Set Current State to Next State

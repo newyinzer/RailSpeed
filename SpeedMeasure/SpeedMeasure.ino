@@ -53,8 +53,33 @@ void setup() {
 }
 
 void loop() {
-  
+  // Read Current Time
   curtime = millis();
   
-  //
+  // State Logic
+  if(currentState == A_FWD) {
+    //
+  } 
+  else if(currentState == B_FWD) {
+    //
+  }
+  else if(currentState == A_REV) {
+    //
+  }
+  else if(currentState == B_REV) {
+    //
+  }
+  else if(currentState == D_INI) {
+    //
+  }
+  else if(currentState == D_TIM) {
+    //
+  }
+  else {
+    Serial.println("State Machine Error");
+    nextState = D_INI;
+  }
+  
+  // Set Current State to Next State
+  currentState = nextState;
 }

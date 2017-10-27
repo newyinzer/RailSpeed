@@ -1,12 +1,19 @@
 // If the diode value is less than this, we are blocked
-#define LIMVAL 100
+const int LIMVAL = 100;
+// Number of inches between A and B
+const int LENGTH = 11;
 
-// Current Time
-unsigned long curtime;
+// Speed Conversion Constants
+const int X1 = 100;
+const int X2 = 11;
+const float X3 = (float)(LENGTH*X1);
 
 // Diode Pins
 const int pinA = A0;
 const int pinB = A1;
+
+// Current Time
+unsigned long curtime;
 
 // Diode Output Values
 int valA;
@@ -23,8 +30,10 @@ float speedVal;
 // States
 enum speedStates {
   A_FWD, // A forward
+  L_FWD, // A to B forward
   B_FWD, // B forward
   A_REV, // A reverse
+  L_REV, // B to A reverse
   B_REV, // B reverse
   D_INI, // Display initialize
   D_TIM  // Display time
@@ -53,6 +62,12 @@ void setup() {
   Serial.print("\n");
 }
 
+float milesPerHour(int timeElasped) {
+  float mph = (float)(X2*timeElasped);
+  mph = X3/mph;
+  return mph;
+}
+
 void loop() {
   // Read Current Time and Pin Values
   curtime = millis();
@@ -61,15 +76,59 @@ void loop() {
   
   // State Logic
   if(currentState == A_FWD) {
-    //
+    // Value Resolution
+    if(valA > LIMVAL) {
+      // If A becomes unblocked, move to L_FWD
+      nextState = L_FWD;
+    }
+    else {
+      // Otherwise, stay in A_FWD
+      nextState = A_FWD;
+    }
+    timeA = timeA;
+    timeB = timeB;
+    timeT = timeT;
+    speedVal = speedVal;
   } 
+  else if(currentState == L_FWD) {
+    // Value Resolution
+    if(valB < LIMVAL) {
+      // If B becomes blocked, move to B_FWD
+      nextState = B_FWD;
+      timeB = curtime;
+    }
+    else {
+      // Otherwise, stay in L_FWD
+      nextState = L_FWD;
+      timeB = timeB;
+    }
+    timeA = timeA;
+    timeT = timeT;
+    speedVal = speedVal;
+  }
   else if(currentState == B_FWD) {
+    // Value Resolution
+    if(valB > LIMVAL) {
+      // If B becomes unblocked, move to D_TIM and calculate
+      nextState = D_TIM;
+      timeT = timeB - timeA;
+      speedVal = milesPerHour(timeT);
+    }
+    else {
+      nextState = B_FWD;
+      timeT = timeT;
+      speedVal = speedVal;
+    }
+    timeA = timeA;
+    timeB = timeB;
+  }
+  else if(currentState == B_REV) {
+    //
+  }
+  else if(currentState == L_REV) {
     //
   }
   else if(currentState == A_REV) {
-    //
-  }
-  else if(currentState == B_REV) {
     //
   }
   else if(currentState == D_INI) {

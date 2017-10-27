@@ -57,7 +57,7 @@ void setup() {
   // Begin Measurement
   Serial.begin(9600);
   curtime = millis();
-  Serial.print("Ready ");
+  Serial.print("Ready at ");
   Serial.print(curtime);
   Serial.print("\n");
 }
@@ -79,100 +79,83 @@ void loop() {
     // Value Resolution
     if(valA > LIMVAL) {
       // If A becomes unblocked, move to L_FWD
+      Serial.print("A_FWD to L_FWD\n");
       nextState = L_FWD;
     }
     else {
       // Otherwise, stay in A_FWD
       nextState = A_FWD;
     }
-    timeA = timeA;
-    timeB = timeB;
-    timeT = timeT;
-    speedVal = speedVal;
   } 
   else if(currentState == L_FWD) {
     // Value Resolution
     if(valB < LIMVAL) {
       // If B becomes blocked, move to B_FWD
+      Serial.print("L_FWD to B_FWD\n");
       nextState = B_FWD;
       timeB = curtime;
     }
     else {
       // Otherwise, stay in L_FWD
       nextState = L_FWD;
-      timeB = timeB;
     }
-    timeA = timeA;
-    timeT = timeT;
-    speedVal = speedVal;
   }
   else if(currentState == B_FWD) {
     // Value Resolution
     if(valB > LIMVAL) {
       // If B becomes unblocked, move to D_TIM and calculate
+      Serial.print("B_FWD to D_TIM\n");
       nextState = D_TIM;
       timeT = timeB - timeA;
       speedVal = milesPerHour(timeT);
     }
     else {
       nextState = B_FWD;
-      timeT = timeT;
-      speedVal = speedVal;
     }
-    timeA = timeA;
-    timeB = timeB;
   }
   else if(currentState == B_REV) {
     // Value Resolution
     if(valB > LIMVAL) {
       // If B becomes unblocked, move to L_REV
+      Serial.print("B_REV to L_REV\n");
       nextState = L_REV;
     }
     else {
       // Otherwise, stay in A_FWD
       nextState = B_REV;
     }
-    timeA = timeA;
-    timeB = timeB;
-    timeT = timeT;
-    speedVal = speedVal;
   }
   else if(currentState == L_REV) {
     // Value Resolution
     if(valA < LIMVAL) {
       // If A becomes blocked, move to A_REV
+      Serial.print("L_REV to A_REV\n");
       nextState = A_REV;
       timeA = curtime;
     }
     else {
       // Otherwise, stay in L_REV
       nextState = L_REV;
-      timeA = timeA;
     }
-    timeB = timeB;
-    timeT = timeT;
-    speedVal = speedVal;
   }
   else if(currentState == A_REV) {
     // Value Resolution
     if(valA > LIMVAL) {
       // If A becomes unblocked, move to D_TIM and calculate
+      Serial.print("A_REV to D_TIM\n");
       nextState = D_TIM;
       timeT = timeA - timeB;
       speedVal = milesPerHour(timeT);
     }
     else {
       nextState = A_REV;
-      timeT = timeT;
-      speedVal = speedVal;
     }
-    timeA = timeA;
-    timeB = timeB;
   }
   else if(currentState == D_INI) {
     // Value Resolution
     if(valA < LIMVAL) {
       // If A is blocked, move to A_FWD
+      Serial.print("D_INI to A_FWD\n");
       nextState = A_FWD;
       timeA = curtime;
       timeB = 0;
@@ -181,6 +164,7 @@ void loop() {
     }
     else if(valB < LIMVAL) {
       // If B is blocked, move to B_REV
+      Serial.print("D_INI to B_REV\n");
       nextState = B_REV;
       timeA = 0;
       timeB = curtime;
@@ -190,10 +174,6 @@ void loop() {
     else {
       // Otherwise, remain in D_INI
       nextState = D_INI;
-      timeA = 0;
-      timeB = 0;
-      timeT = 0;
-      speedVal = 0.0;
     }
   }
   else if(currentState == D_TIM) {
@@ -205,16 +185,15 @@ void loop() {
     Serial.print(speedVal);
     Serial.print(" Miles per Hour\n");
     
-    // Value Resolution
+    // Move to D_INI
+    // Later on there may be a delay associated with this state
+    Serial.print("D_TIM to D_INI\n");
     nextState = D_INI;
-    timeA = timeA;
-    timeB = timeB;
-    timeT = timeT;
-    speedVal = speedVal;
   }
   else {
     // Display the Error
     Serial.println("State Machine Error");
+    Serial.print("UNKNOWN to D_INI\n");
     
     // Value Resolution
     nextState = D_INI;

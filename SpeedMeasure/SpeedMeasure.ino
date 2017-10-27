@@ -62,7 +62,7 @@ void setup() {
   Serial.print("\n");
 }
 
-float milesPerHour(int timeElasped) {
+float milesPerHour(unsigned long timeElasped) {
   float mph = (float)(X2*timeElasped);
   mph = X3/mph;
   return mph;
@@ -123,13 +123,51 @@ void loop() {
     timeB = timeB;
   }
   else if(currentState == B_REV) {
-    //
+    // Value Resolution
+    if(valB > LIMVAL) {
+      // If B becomes unblocked, move to L_REV
+      nextState = L_REV;
+    }
+    else {
+      // Otherwise, stay in A_FWD
+      nextState = B_REV;
+    }
+    timeA = timeA;
+    timeB = timeB;
+    timeT = timeT;
+    speedVal = speedVal;
   }
   else if(currentState == L_REV) {
-    //
+    // Value Resolution
+    if(valA < LIMVAL) {
+      // If A becomes blocked, move to A_REV
+      nextState = A_REV;
+      timeA = curtime;
+    }
+    else {
+      // Otherwise, stay in L_REV
+      nextState = L_REV;
+      timeA = timeA;
+    }
+    timeB = timeB;
+    timeT = timeT;
+    speedVal = speedVal;
   }
   else if(currentState == A_REV) {
-    //
+    // Value Resolution
+    if(valA > LIMVAL) {
+      // If A becomes unblocked, move to D_TIM and calculate
+      nextState = D_TIM;
+      timeT = timeA - timeB;
+      speedVal = milesPerHour(timeT);
+    }
+    else {
+      nextState = A_REV;
+      timeT = timeT;
+      speedVal = speedVal;
+    }
+    timeA = timeA;
+    timeB = timeB;
   }
   else if(currentState == D_INI) {
     // Value Resolution

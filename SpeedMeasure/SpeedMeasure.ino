@@ -4,9 +4,10 @@ const int LIMVAL = 100;
 const int LENGTH = 11;
 
 // Speed Conversion Constants
+const int MSPERS = 1000;
 const int X1 = 100;
 const int X2 = 11;
-const float X3 = (float)(LENGTH*X1);
+const float X3 = (float)(LENGTH*X1*MSPERS);
 
 // Diode Pins
 const int pinA = A0;

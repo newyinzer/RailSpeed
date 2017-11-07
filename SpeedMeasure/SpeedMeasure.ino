@@ -1,12 +1,12 @@
 // If the diode value is less than this, we are blocked
-const int LIMVAL = 100;
+const int LIMVAL = 10;
 // Number of inches between A and B
-const int LENGTH = 11;
+const long LENGTH = 11;
 
 // Speed Conversion Constants
-const int MSPERS = 1000;
-const int X1 = 100;
-const int X2 = 11;
+const long MSPERS = 1000;
+const long X1 = 100;
+const long X2 = 11;
 const float X3 = (float)(LENGTH*X1*MSPERS);
 
 // Diode Pins

@@ -2,6 +2,8 @@
 const int LIMVAL = 10;
 // Number of inches between A and B
 const long LENGTH = 11;
+// Debug or not
+const long configdebug = 0;
 
 // Speed Conversion Constants
 const long MSPERS = 1000;
@@ -71,9 +73,18 @@ float milesPerHour(unsigned long timeElasped) {
 
 void loop() {
   // Read Current Time and Pin Values
+  delay(25);
   curtime = millis();
   valA = analogRead(pinA);
   valB = analogRead(pinB);
+  if(configdebug == 1) {
+    Serial.print("A = ");
+    Serial.print(valA);
+    Serial.print(" B = ");
+    Serial.print(valB);
+    Serial.print("\n");
+  }
+  
   
   // State Logic
   if(currentState == A_FWD) {

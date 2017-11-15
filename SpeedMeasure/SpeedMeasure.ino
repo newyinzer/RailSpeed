@@ -91,7 +91,9 @@ void loop() {
     // Value Resolution
     if(valA > LIMVAL) {
       // If A becomes unblocked, move to L_FWD
-      Serial.print("A_FWD to L_FWD\n");
+      Serial.print("A_FWD to L_FWD - A = ");
+      Serial.print(valA);
+      Serial.print("\n");
       nextState = L_FWD;
     }
     else {
@@ -103,7 +105,9 @@ void loop() {
     // Value Resolution
     if(valB < LIMVAL) {
       // If B becomes blocked, move to B_FWD
-      Serial.print("L_FWD to B_FWD\n");
+      Serial.print("L_FWD to B_FWD - B = ");
+      Serial.print(valB);
+      Serial.print("\n");
       nextState = B_FWD;
       timeB = curtime;
     }
@@ -116,7 +120,9 @@ void loop() {
     // Value Resolution
     if(valB > LIMVAL) {
       // If B becomes unblocked, move to D_TIM and calculate
-      Serial.print("B_FWD to D_TIM\n");
+      Serial.print("B_FWD to D_TIM - B = ");
+      Serial.print(valB);
+      Serial.print("\n");
       nextState = D_TIM;
       timeT = timeB - timeA;
       speedVal = milesPerHour(timeT);
@@ -129,7 +135,9 @@ void loop() {
     // Value Resolution
     if(valB > LIMVAL) {
       // If B becomes unblocked, move to L_REV
-      Serial.print("B_REV to L_REV\n");
+      Serial.print("B_REV to L_REV - B = ");
+      Serial.print(valB);
+      Serial.print("\n");
       nextState = L_REV;
     }
     else {
@@ -141,7 +149,9 @@ void loop() {
     // Value Resolution
     if(valA < LIMVAL) {
       // If A becomes blocked, move to A_REV
-      Serial.print("L_REV to A_REV\n");
+      Serial.print("L_REV to A_REV - A = ");
+      Serial.print(valA);
+      Serial.print("\n");
       nextState = A_REV;
       timeA = curtime;
     }
@@ -154,7 +164,9 @@ void loop() {
     // Value Resolution
     if(valA > LIMVAL) {
       // If A becomes unblocked, move to D_TIM and calculate
-      Serial.print("A_REV to D_TIM\n");
+      Serial.print("A_REV to D_TIM - A = ");
+      Serial.print(valA);
+      Serial.print("\n");
       nextState = D_TIM;
       timeT = timeA - timeB;
       speedVal = milesPerHour(timeT);
@@ -167,7 +179,9 @@ void loop() {
     // Value Resolution
     if(valA < LIMVAL) {
       // If A is blocked, move to A_FWD
-      Serial.print("D_INI to A_FWD\n");
+      Serial.print("D_INI to A_FWD - A = ");
+      Serial.print(valA);
+      Serial.print("\n");
       nextState = A_FWD;
       timeA = curtime;
       timeB = 0;
@@ -176,7 +190,9 @@ void loop() {
     }
     else if(valB < LIMVAL) {
       // If B is blocked, move to B_REV
-      Serial.print("D_INI to B_REV\n");
+      Serial.print("D_INI to B_REV - B = ");
+      Serial.print(valB);
+      Serial.print("\n");
       nextState = B_REV;
       timeA = 0;
       timeB = curtime;

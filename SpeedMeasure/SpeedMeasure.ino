@@ -215,8 +215,10 @@ void loop() {
     
     // Move to D_INI
     // Later on there may be a delay associated with this state
-    Serial.print("Delaying for 5 seconds\n");
-    delay(5000);
+    Serial.print("Delaying for ");
+    Serial.print(timeT);
+    Serial.print(" milliseconds\n");
+    delay(timeT);
     Serial.print("D_TIM to D_INI\n");
     nextState = D_INI;
   }

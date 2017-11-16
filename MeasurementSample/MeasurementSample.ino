@@ -3,7 +3,7 @@ const int pinA = A0;
 const int pinB = A1;
 
 // Delay time
-const unsigned long deltime = 25;
+const unsigned long deltime = 100;
 
 // Current Time
 unsigned long curtime;

@@ -1,5 +1,5 @@
 // If the diode value is less than this, we are blocked
-const int LIMVAL = 10;
+const int LIMVAL = 1;
 // Number of inches between A and B
 const long LENGTH = 11;
 // Debug or not
@@ -215,6 +215,8 @@ void loop() {
     
     // Move to D_INI
     // Later on there may be a delay associated with this state
+    Serial.print("Delaying for 5 seconds\n");
+    delay(5000);
     Serial.print("D_TIM to D_INI\n");
     nextState = D_INI;
   }

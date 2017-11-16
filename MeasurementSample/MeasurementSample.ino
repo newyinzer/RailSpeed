@@ -2,8 +2,13 @@
 const int pinA = A0;
 const int pinB = A1;
 
+// Delay time
+const unsigned long deltime = 25;
+
 // Current Time
 unsigned long curtime;
+// Next Time
+unsigned long nextime;
 
 // Diode Output Values
 int valA;
@@ -19,29 +24,29 @@ void setup() {
   // Begin Measurement
   Serial.begin(9600);
   curtime = millis();
+  nextime = 0;
   Serial.print("Ready at ");
   Serial.print(curtime);
   Serial.print("\n");
 }
 
-float milesPerHour(unsigned long timeElasped) {
-  float mph = (float)(X2*timeElasped);
-  mph = X3/mph;
-  return mph;
-}
-
 void loop() {
   // Read Current Time and Pin Values
-  //delay(25);
   curtime = millis();
+  nextime = curtime + deltime;
   valA = analogRead(pinA);
   valB = analogRead(pinB);
   
-  if(configdebug == 1) {
-    Serial.print("A = ");
-    Serial.print(valA);
-    Serial.print(" B = ");
-    Serial.print(valB);
-    Serial.print("\n");
+  // Print Values
+  Serial.print(curtime);
+  Serial.print("\t");
+  Serial.print(valA);
+  Serial.print("\t");
+  Serial.print(valB);
+  Serial.print("\n");
+
+  // Delay until next time
+  while(nextime > millis()) {
+    delay(1);
   }
 }

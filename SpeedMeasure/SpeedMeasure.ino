@@ -11,11 +11,18 @@ const long LENGTH = 11;
 // Debug or not
 const long configdebug = 0;
 
+// Width of number to display
+const int DISPLEN = 12;
+
 // Speed Conversion Constants
 const long MSPERS = 1000;
 const long X1 = 100;
 const long X2 = 11;
 const float X3 = (float)(LENGTH*X1*MSPERS);
+
+// Strings for display screen
+char timeString[17];
+char speedString[17];
 
 // Diode Pins
 const int pinA = A0;
@@ -66,6 +73,20 @@ void setup() {
   timeT = 0;
   speedVal = 0.0;
   
+  // Set up end of time string
+  timeString[12] = ' ';
+  timeString[13] = 'm';
+  timeString[14] = 's';
+  timeString[15] = ' ';
+  timeString[16] = '\0';
+  
+  // Set up end of speed string
+  speedString[12] = ' ';
+  speedString[13] = 'm';
+  speedString[14] = 'p';
+  speedString[15] = 'h';
+  speedString[16] = '\0';
+  
   // Begin Measurement
   Serial.begin(9600);
   curtime = millis();
@@ -86,6 +107,42 @@ float milesPerHour(unsigned long timeElasped) {
   float mph = (float)(X2*timeElasped);
   mph = X3/mph;
   return mph;
+}
+
+void screenDisplay() {
+  // Convert speed to unsigned long
+  unsigned long speedTemp = (unsigned long)(speedVal+0.5);
+  unsigned long timeTemp = timeT;
+  int itr = DISPLEN-1;
+  
+  // Loop through time string
+  while(itr >= 0) {
+    if(timeTemp != 0) {
+      timeString[itr] = (char)((timeTemp % 10) + 48);
+    } else {
+      timeString[itr] = ' ';
+    }
+    timeTemp = timeTemp/10;
+    itr--;
+  }
+  
+  // Loop through speed string
+  itr = DISPLEN-1;
+  while(itr >= 0) {
+    if(speedTemp != 0) {
+      speedString[itr] = (char)((speedTemp % 10) + 48);
+    } else {
+      speedString[itr] = ' ';
+    }
+    speedTemp = speedTemp/10;
+    itr--;
+  }
+  
+  // Display the time and speed
+  lcd.setCursor(0, 0);
+  lcd.print(timeString);
+  lcd.setCursor(0, 1);
+  lcd.print(speedString);
 }
 
 void loop() {
@@ -229,6 +286,7 @@ void loop() {
     Serial.print("Speed: ");
     Serial.print(speedVal);
     Serial.print(" Miles per Hour\n");
+    screenDisplay();
     
     // Move to D_INI
     // Later on there may be a delay associated with this state

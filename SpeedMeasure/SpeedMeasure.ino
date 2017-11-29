@@ -1,3 +1,9 @@
+// Liquid Crystal Display Library
+#include <LiquidCrystal.h>
+
+// Pins for LCD Screen
+const int D4 = 5, D5 = 4, D6 = 3, D7 = 2, RS = 12, EN = 11;
+
 // If the diode value is less than this, we are blocked
 const int LIMVAL = 1;
 // Number of inches between A and B
@@ -44,6 +50,9 @@ enum speedStates {
 enum speedStates currentState;
 enum speedStates nextState;
 
+// LCD Screen Initialization
+LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
+
 void setup() {
   // Initialize Values
   pinMode(pinA, INPUT);
@@ -63,6 +72,14 @@ void setup() {
   Serial.print("Ready at ");
   Serial.print(curtime);
   Serial.print("\n");
+  
+  // Activate LCD Screen
+  lcd.begin(16, 2);
+  // Print Initialization Message
+  lcd.setCursor(0, 0);
+  lcd.print("RailSpeed");
+  lcd.setCursor(0, 1);
+  lcd.print("Initialized");
 }
 
 float milesPerHour(unsigned long timeElasped) {
